@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "cw-parser"
+version = "0.1.0"
+description = ""
+authors = ["Saysuu <skysaika@yandex.ru>"]
+readme = "README.md"
+packages = [{include = "cw_parser"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
