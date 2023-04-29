@@ -1,26 +1,28 @@
-from src.headhunter_api import HeadHunterAPI, JSONSaverHH
-from src.superjob_api import SuperJobAPI, JSONSaverSJ
+from src.headhunter_api import HeadHunterAPI
+from src.jsonsaver import JSONSaverHH, JSONSaverSJ
+from src.superjob_api import SuperJobAPI
 
 if __name__ == "__main__":
     print('Данная программа предназначена для парсинга вакансий на площадке Super Job и HeadHunter\n')
 
-vacancy_for_search = 'python'
+# vacancy_for_search = 'python'
+user_input = str(input('Введите вакансии для поиска: '))
 
 # Создание экземпляра класса для работы с API сайтов с вакансиями
 hh_api = HeadHunterAPI()
 superjob_api = SuperJobAPI()
 
 # Получение вакансий с разных платформ
-hh_vacancies = hh_api.get_vacancies_hh("Python")
-sj_vacancies = superjob_api.get_vacancies_sj("Python")
+hh_vacancies = hh_api.get_vacancies_hh(user_input)
+sj_vacancies = superjob_api.get_vacancies_sj(user_input)
 
 # Сохранение информации о вакансиях c HH в файл:
-# json_saver_hh = JSONSaverHH(vacancy_for_search)
-# json_saver_hh.add_vacancies_hh(hh_vacancies)
-# data_hh = json_saver_hh.select_hh()
+json_saver_hh = JSONSaverHH()
+json_saver_hh.add_vacancies_hh(hh_vacancies)
+data_hh = json_saver_hh.select_hh()
 
 # Сохранение информации о вакансиях c SJ в файл:
-json_saver_sj = JSONSaverSJ(vacancy_for_search)
+json_saver_sj = JSONSaverSJ()
 json_saver_sj.add_vacancies_sj(sj_vacancies)
 data_sj = json_saver_sj.select_sj()
 

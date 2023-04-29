@@ -61,7 +61,7 @@ class SJVacancy:
     __slots__ = (
         'profession', 'payment_from', 'payment_to',
         'currency', 'title', 'link',
-        'payment_sort_from', 'payment_sort_to')
+    )
 
     def __init__(self, profession='', payment_from=None, payment_to=None, currency="rub", title='', link=''):
         self.profession = profession
@@ -71,11 +71,6 @@ class SJVacancy:
         self.title = title
         self.link = link
 
-        self.payment_sort_from = payment_from
-        self.payment_sort_to = payment_to
-        if currency and currency == 'USD':
-            self.payment_sort_from = self.payment_sort_from * 83 if self.payment_sort_from else None
-            self.payment_sort_to = self.payment_sort_to * 83 if self.payment_sort_to else None
 
     def __str__(self):
         """Строковое представление класса SJVacancy"""
@@ -95,62 +90,4 @@ class SJVacancy:
                f"currency='{self.currency}', " \
                f"title='{self.title}', " \
                f"link='{self.link}')"
-
-    def __gt__(self, other):
-        """Метод сравнения min зарплат SJ"""
-        if not other.payment_sort_from:
-            return True
-        if not self.payment_sort_from:
-            return False
-        return self.payment_sort_from >= other.payment_sort_from
-
-
-class JSONSaverSJ:
-    """Класс для сохранения данных c SJ в файл json"""
-
-    def __init__(self, vacancy_for_search):
-        self.__filename = f'{vacancy_for_search.title()}.json'
-
-    @property
-    def filename_sj(self):
-        """Геттер возвращает имя файла"""
-        return self.__filename
-
-    def add_vacancies_sj(self, data):
-        """Функция для добавления вакансий SJ"""
-        with open(self.__filename, 'w', encoding='utf-8') as file:
-            json.dump(data, file, indent=4, ensure_ascii=False)
-
-    def select_sj(self):
-        """Функция выбора данных для записи в json"""
-        with open(self.__filename, 'r', encoding='utf-8') as file:
-            data = json.load(file)
-
-        # Создадим список вакансий SJ
-        vacancies = []
-        for row in data:
-            payment_from, payment_to, currency = row['payment_from'], row['payment_to'], row['currency']
-            vacancies.append(SJVacancy(
-                row['profession'],
-                payment_from,
-                payment_to,
-                currency,
-                row['client'],
-                row['link']
-            ))
-        with open('JSON_SJ_test.json', 'w', encoding='utf-8') as file:
-            json.dump(vacancies, file, ensure_ascii=False, indent=4)
-
-    # @staticmethod
-    # def instantiate_vacancy(vac_data):
-    #     """Принимает данные одной вакансии с SJ и возвращает экземпляр класса Vacancy"""
-    #     vacancy = SJVacancy(
-    #         title=vac_data['profession'],
-    #         salary_min=vac_data['payment_from'],
-    #         salary_max=vac_data['payment_to'],
-    #         currency=vac_data['currency'],
-    #         employer=vac_data['title'],
-    #         link=vac_data['link']
-    #     )
-    #     return vacancy
 

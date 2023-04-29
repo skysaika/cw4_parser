@@ -58,7 +58,7 @@ class HHVacancy:
     """Класс вакансий HH для создания списка экземпляров """
     __slots__ = (
         'title', 'salary_min', 'salary_max', 'currency',
-        'employer', 'link', 'salary_sort_min', 'salary_sort_max',
+        'employer', 'link',
     )
 
     def __init__(self, title='', salary_min=None, salary_max=None, currency="rub", employer='', link=''):
@@ -69,11 +69,6 @@ class HHVacancy:
         self.employer = employer
         self.link = link
 
-        self.salary_sort_min = salary_min
-        self.salary_sort_max = salary_max
-        if currency and currency == 'USD':
-            self.salary_sort_min = self.salary_sort_min * 83 if self.salary_sort_min else None
-            self.salary_sort_max = self.salary_sort_max * 83 if self.salary_sort_max else None
 
     def __str__(self):
         """Строковое представление класса HHVacancy"""
@@ -94,65 +89,4 @@ class HHVacancy:
                f"currency='{self.currency}', " \
                f"employer='{self.employer}', " \
                f"link='{self.link}')"
-
-    def __gt__(self, other):
-        """Метод сравнения min зарплат НН"""
-        if not other.salary_sort_min:
-            return True
-        if not self.salary_sort_min:
-            return False
-        return self.salary_sort_min >= other.salary_sort_min
-
-
-class JSONSaverHH:
-    """Класс для сохранения данных c HH в файл json"""
-
-    def __init__(self, vacancy_for_search):
-        self.__filename = f'{vacancy_for_search.title()}.json'
-
-    @property
-    def filename_hh(self):
-        """Геттер возвращает имя файла"""
-        return self.__filename
-
-    def add_vacancies_hh(self, data):
-        """Функция для добавления вакансий HH"""
-        with open(self.__filename, 'w', encoding='utf-8') as file:
-            json.dump(data, file, indent=4, ensure_ascii=False)
-
-    def select_hh(self):
-        """Функция выбора данных для записи в json"""
-        with open(self.__filename, 'r', encoding='utf-8') as file:
-            data = json.load(file)
-
-        # Создадим список вакансий HH
-        vacancies = []
-        for row in data:
-            salary_min, salary_max, currency = None, None, None
-            if row['salary']:
-                salary_min, salary_max, currency = row['salary']['from'], row['salary']['to'], row['salary']['currency']
-            vacancies.append(HHVacancy(
-                row['name'],
-                salary_min,
-                salary_max,
-                currency,
-                row['employer']['name'],
-                row['employer']['alternate_url']
-            ))
-        with open('JSON_HH_test.json', 'w', encoding='utf-8') as file:
-            json.dump(vacancies, file, ensure_ascii=False, indent=4)
-
-
-    # @staticmethod
-    # def instantiate_vacancy(vac_data):
-    #     """Принимает данные одной вакансии с HH и возвращает экземпляр класса Vacancy"""
-    #     vacancy = HHVacancy(
-    #         title=vac_data['name'],
-    #         salary_min=vac_data['salary']['from'],
-    #         salary_max=vac_data['salary']['to'],
-    #         currency=vac_data['salary']['currency'],
-    #         employer=vac_data['employer']['name'],
-    #         link=vac_data['alternate_url']
-    #     )
-    #     return vacancy
 
