@@ -25,7 +25,7 @@ class SuperJobAPI(AbstractApi):
             "page": page,
             'count': 100,
             'c': 1,
-            "per_page": 100,
+            "per_page": 10,
         }
         response = requests.get(self.__url_sj, headers=headers, params=params)
         if response.status_code != 200:

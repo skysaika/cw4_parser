@@ -21,7 +21,7 @@ class HeadHunterAPI(AbstractApi):
             "text": vacancy_for_search,
             "page": page,
             'area': 113,
-            "per_page": 100,
+            "per_page": 10,
         }
 
         response = requests.get(self.__url_hh, params=params)
