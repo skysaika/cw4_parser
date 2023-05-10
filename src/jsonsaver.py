@@ -18,27 +18,30 @@ class JSONSaverSJ:
         """Функция выбора данных для записи в json"""
         # Создадим список вакансий SJ
         vacancies = []
-        for row in data:
-            try:
-                if row['payment_to'] == 0:  ### Проверка на диапазон зарплаты
-                    salary = {'from': row['payment_from'], 'currency': row['currency']}
-                elif row['payment_from'] == 0:
-                    salary = {'from': row['payment_to'], 'currency': row['currency']}
-                else:
-                    salary = {'from': row['payment_from'], 'to': row['payment_to'],
-                              'currency': row['currency']}
-            except:
-                salary = {'from': 0, 'currency': 'RUR'}
+        if data == None:
+            return None
+        else:
+            for row in data:
+                try:
+                    if row['payment_to'] == 0:  ### Проверка на диапазон зарплаты
+                        salary = {'from': row['payment_from'], 'currency': row['currency']}
+                    elif row['payment_from'] == 0:
+                        salary = {'from': row['payment_to'], 'currency': row['currency']}
+                    else:
+                        salary = {'from': row['payment_from'], 'to': row['payment_to'],
+                                  'currency': row['currency']}
+                except:
+                    salary = {'from': 0, 'currency': 'RUR'}
 
-            vacancy_dict = {
-                'profession': row['profession'],
-                'salary': salary,
-                'description': row['candidat'],
-                'company_name': row['firm_name'],
-                'link': row['link']
-            }
-            vacancies.append(vacancy_dict)
-        return vacancies
+                vacancy_dict = {
+                    'profession': row['profession'],
+                    'salary': salary,
+                    'description': row['candidat'],
+                    'company_name': row['firm_name'],
+                    'link': row['link']
+                }
+                vacancies.append(vacancy_dict)
+            return vacancies
 
 
 class JSONSaverHH:
@@ -56,27 +59,30 @@ class JSONSaverHH:
         """Функция выбора данных для записи в json"""
         # Создадим список вакансий HH
         vacancies = []
-        for row in data:
-            try:
-                if row['salary']['to'] == None:  ### Проверка на диапазон зарплаты
-                    salary = {'from': row['salary']['from'], 'currency': row['salary']['currency']}
-                elif row['salary']['from'] == None:
-                    salary = {'from': row['salary']['to'], 'currency': row['salary']['currency']}
-                else:
-                    salary = {'from': row['salary']['from'], 'to': row['salary']['to'],
-                              'currency': row['salary']['currency']}
-            except:
-                salary = {'from': 0, 'currency': 'RUR'}
+        if data == None:
+            return None
+        else:
+            for row in data:
+                try:
+                    if row['salary']['to'] == None:  ### Проверка на диапазон зарплаты
+                        salary = {'from': row['salary']['from'], 'currency': row['salary']['currency']}
+                    elif row['salary']['from'] == None:
+                        salary = {'from': row['salary']['to'], 'currency': row['salary']['currency']}
+                    else:
+                        salary = {'from': row['salary']['from'], 'to': row['salary']['to'],
+                                  'currency': row['salary']['currency']}
+                except:
+                    salary = {'from': 0, 'currency': 'RUR'}
 
-            vacancy_dict = {
-                'profession': row['name'],
-                'salary': salary,
-                'description': row['snippet']['requirement'],
-                'company_name': row['employer']['name'],
-                'link': row['alternate_url']
-            }
-            vacancies.append(vacancy_dict)
-        return vacancies
+                vacancy_dict = {
+                    'profession': row['name'],
+                    'salary': salary,
+                    'description': row['snippet']['requirement'],
+                    'company_name': row['employer']['name'],
+                    'link': row['alternate_url']
+                }
+                vacancies.append(vacancy_dict)
+            return vacancies
 
 
 class JSONParser:
@@ -84,7 +90,7 @@ class JSONParser:
     def __init__(self):
         self.__filename = f'JSON_FINAL.json'
 
-    def sort_and_save_to_JSON(self, hh: dict, sj: dict):
+    def sort_and_save_to_JSON(self, hh = None, sj = None):
         """Функция сортировки вакансий по выбранным платформам и сохранения в единый json"""
         if hh is not None and sj is None:  ### Если выбрана только hh -> сохраняю только hh
             with open(self.__filename, 'w', encoding='utf-8') as file:
@@ -148,7 +154,7 @@ class JSONParser:
             json.dump(vacancy_by_salary, file, ensure_ascii=False, indent=4)
 
     def search_words(self, search_words):
-        """Функция поиска по ключевомым словам, заданным пользователем"""
+        """Функция поиска по ключевым словам, заданным пользователем"""
         if search_words == '':  # если не задано ничего
             with open(self.__filename, 'r', encoding='utf-8') as file:
                 vacancies = json.load(file)
@@ -160,7 +166,7 @@ class JSONParser:
                 search_dict = []
                 words_lower = search_words.lower()  # Приведение запроса и заголовков вакансий к нижнему регистру
                 split_vacancy = re.findall(r'\b\w+\b', words_lower)  # Разбиение запроса и заголовков на отдельные слова
-                for row in vacancies: # Поиск совпадений между словами запроса и описанием вакансий
+                for row in vacancies:  # Поиск совпадений между словами запроса и описанием вакансий
                     title_lower = str(row['description']).lower()
                     split_title = re.findall(r'\b\w+\b', title_lower)
                     if set(split_vacancy) & set(split_title): # если множества пересекаются
