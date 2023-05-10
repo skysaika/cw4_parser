@@ -5,6 +5,7 @@ from pprint import pprint
 import requests
 
 from src.abstracts_classes import AbstractApi, ApiError
+from src.vacancy import Vacancy
 
 
 class HeadHunterAPI(AbstractApi):
@@ -21,7 +22,7 @@ class HeadHunterAPI(AbstractApi):
             "text": vacancy_for_search,
             "page": page,
             'area': 113,
-            "per_page": 10,
+            "per_page": 100,
         }
 
         response = requests.get(self.__url_hh, params=params)
@@ -52,41 +53,3 @@ class HeadHunterAPI(AbstractApi):
     def get_vacancies_list(self):
         """Метод для вывода общих собранных данных"""
         return self.__vacancies_list
-
-
-class HHVacancy:
-    """Класс вакансий HH для создания списка экземпляров """
-    __slots__ = (
-        'title', 'salary_min', 'salary_max', 'currency',
-        'employer', 'link',
-    )
-
-    def __init__(self, title='', salary_min=None, salary_max=None, currency="rub", employer='', link=''):
-        self.title = title
-        self.salary_min = salary_min
-        self.salary_max = salary_max
-        self.currency = currency
-        self.employer = employer
-        self.link = link
-
-
-    def __str__(self):
-        """Строковое представление класса HHVacancy"""
-        # определим, если нет salary_min, salary_max или не указана salary, currency
-        salary_min = f'От {self.salary_min}' if self.salary_min else ''
-        salary_max = f'До {self.salary_max}' if self.salary_max else ''
-        currency = self.currency if self.currency else ''
-        if self.salary_min is None and self.salary_max is None:
-            salary_min = "Не указана"
-        return f"{self.employer}: {self.title} \n{salary_min} {salary_max} {currency} \nURL: {self.link}"
-
-    def __repr__(self):
-        """Возвращает полное представление для отладки класса HHVacancy"""
-        return f"HHVacancy(" \
-               f"title='{self.title}', " \
-               f"salary_min='{self.salary_min}', " \
-               f"salary_max='{self.salary_max}', " \
-               f"currency='{self.currency}', " \
-               f"employer='{self.employer}', " \
-               f"link='{self.link}')"
-

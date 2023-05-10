@@ -1,6 +1,5 @@
 import datetime
-import json
-from pprint import pprint
+
 
 import requests
 
@@ -54,40 +53,3 @@ class SuperJobAPI(AbstractApi):
     def get_vacancies_list(self):
         """Метод для вывода общих собранных данных"""
         return self.__vacancies_list
-
-
-class SJVacancy:
-    """Класс вакансий SJ для создания списка экземпляров"""
-    __slots__ = (
-        'profession', 'payment_from', 'payment_to',
-        'currency', 'title', 'link',
-    )
-
-    def __init__(self, profession='', payment_from=None, payment_to=None, currency="rub", title='', link=''):
-        self.profession = profession
-        self.payment_from = payment_from
-        self.payment_to = payment_to
-        self.currency = currency
-        self.title = title
-        self.link = link
-
-
-    def __str__(self):
-        """Строковое представление класса SJVacancy"""
-        payment_from = f'От {self.payment_from}' if self.payment_from else ''
-        payment_to = f'До {self.payment_to}' if self.payment_to else ''
-        currency = self.currency if self.currency else ''
-        if self.payment_from is None and self.payment_to is None:
-            payment_from = "Не указана"
-        return f"{self.title}: {self.profession} \n{payment_from} {payment_to} \n{currency} \n{self.link}"
-
-    def __repr__(self):
-        """Возвращает полное представление для отладки класса SJVacancy"""
-        return f"SJVacancy(" \
-               f"profession='{self.profession}', " \
-               f"payment_from='{self.payment_from}', " \
-               f"payment_to='{self.payment_to}', " \
-               f"currency='{self.currency}', " \
-               f"title='{self.title}', " \
-               f"link='{self.link}')"
-
